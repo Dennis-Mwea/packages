@@ -99,6 +99,7 @@ class OpenContainer<T extends Object?> extends StatefulWidget {
     this.useRootNavigator = false,
     this.routeSettings,
     this.clipBehavior = Clip.antiAlias,
+    this.isOpaque = true,
   });
 
   /// Background color of the container while it is closed.
@@ -260,6 +261,15 @@ class OpenContainer<T extends Object?> extends StatefulWidget {
   ///  * [Material.clipBehavior], which is used to implement this property.
   final Clip clipBehavior;
 
+  /// The [PageRouter] will be opaque (or not) according to this option.
+  ///
+  /// Defaults to [true], and must not be null.
+  ///
+  /// See also:
+  ///
+  ///  * [PageRouter.opaque], which is used to implement this property.
+  final bool isOpaque;
+
   @override
   State<OpenContainer<T?>> createState() => _OpenContainerState<T>();
 }
@@ -299,6 +309,7 @@ class _OpenContainerState<T> extends State<OpenContainer<T?>> {
       transitionType: widget.transitionType,
       useRootNavigator: widget.useRootNavigator,
       routeSettings: widget.routeSettings,
+      isOpaque: widget.isOpaque,
     ));
     if (widget.onClosed != null) {
       widget.onClosed!(data);
@@ -416,6 +427,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
     required this.transitionType,
     required this.useRootNavigator,
     required RouteSettings? routeSettings,
+    this.isOpaque = true,
   })  : _elevationTween = Tween<double>(
           begin: closedElevation,
           end: openElevation,
@@ -557,6 +569,8 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
   final ContainerTransitionType transitionType;
 
   final bool useRootNavigator;
+
+  final bool isOpaque;
 
   final Tween<double> _elevationTween;
   final ShapeBorderTween _shapeTween;
@@ -866,7 +880,7 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
   Color? get barrierColor => null;
 
   @override
-  bool get opaque => true;
+  bool get opaque => isOpaque;
 
   @override
   bool get barrierDismissible => false;
